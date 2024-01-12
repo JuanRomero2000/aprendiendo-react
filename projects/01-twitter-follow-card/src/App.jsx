@@ -13,13 +13,13 @@ const users = [
       isFollowing: false
     },
     {
-      userName: 'mouredev',
-      name: 'Brais Moure',
+      userName: 'Cristiano',
+      name: 'Cristiano Ronaldo',
       isFollowing: true
     },
     {
-      userName: 'TMChein',
-      name: 'Tomas',
+      userName: 'MoureDev',
+      name: 'Brais Moure',
       isFollowing: false
     }
 ]
