@@ -1,34 +1,11 @@
 import { useState } from 'react'
+import { TURNS } from './constants.js'
+import { Board } from './components/Board.jsx'
+import { Square } from './components/Square'
+import { checkWinner } from './logic/board.js'
+import { checkEndGame } from './logic/board.js'
+import { WinnerModal } from './components/WinnerModal.jsx'
 import confetti from 'canvas-confetti'
-
-const TURNS = {
-  X : 'x',
-  O : 'o'
-}
-
-const WINNER_COMBOS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-]
-
-const Square = ({ children, isSelected, updateBoard, index}) => {
-  
-  const className = `square ${isSelected ? 'is-selected' : ''}`
-
-  const handleClick = () => {
-    updateBoard(index)
-  }
-
-  return (
-    <div className={className} onClick={handleClick}> {children} </div>
-  )
-}
 
 function App() {
   
@@ -61,23 +38,6 @@ function App() {
 
   }
 
-  const checkWinner = (boardToCheck) => {
-
-    for (const combo of WINNER_COMBOS){
-      const [posA, posB, posC] = combo
-      if (boardToCheck[posA] === boardToCheck[posB] && boardToCheck[posA] === boardToCheck[posC]){
-        return boardToCheck[posA]
-      }
-    }
-
-    return null
-
-  }
-
-  const checkEndGame = (boardToCheck) => {
-    return boardToCheck.every((square) => square !== null)
-  }
-
   const resetGame = () => {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
@@ -87,24 +47,10 @@ function App() {
   return (
     <main className='board'>
       <h1>Triqui</h1>
-      <section className='game'>
-        {
-          board.map((_, index) => {
-            return (
-              <Square 
-                key={index} 
-                index={index}
-                updateBoard={updateBoard}
-              >
-                {board[index]}
-              </Square>
-            )
-          })
-        }
-      </section>
 
+      <Board board={board} updateBoard={updateBoard}/>
+      
       <section className='turn'>
-        
         <Square isSelected={turn === TURNS.X}>
           {TURNS.X}
         </Square>
@@ -112,28 +58,10 @@ function App() {
         <Square isSelected={turn === TURNS.O}>
           {TURNS.O}
         </Square>
-      
       </section>
 
-      {
-        winner !== null && (
-          <section className='winner'>
-            <div className='text'>
-              <h2> 
-                {winner === false ? 'Empate' : 'Ganó:'}
-              </h2>
-              
-              <header className='win'>
-                {winner && <Square>{winner}</Square>}
-              </header>
+      <WinnerModal winner={winner} resetGame={resetGame} />
 
-              <footer>
-                <button onClick={resetGame}>Empezar de nuevo</button>
-              </footer>
-            </div>
-          </section>  
-        )
-      }
     </main>
   )
 }
